@@ -3,8 +3,14 @@ package spider.handler;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
+import spider.GetAreaMain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -61,6 +67,29 @@ public class ProvinceHandler extends AbstractDefaultAreaHandler {
         return super.analysisHtml(url,parentCode,html,"provincetr");
     }
 
+    /**
+     * 从页面中抽取出每个地区的node实体
+     *
+     * @param doc       jsoup doc对象
+     * @param otherArgs 用于解析html的其他参数
+     * @return 该页面所有代表地区的node节点
+     * @author YuChen
+     * @date 2019/12/24 14:45
+     */
+    @Override
+    List<Node> getAreaNode(Document doc, String... otherArgs) {
+        List<Node> res = new ArrayList<>();
+        Elements provincetr = doc.getElementsByClass(otherArgs[0]);
+        for (Element areaLine : provincetr) {
+            List<Node> raceAreaHtmls = areaLine.childNodes();
+            for (Node raceAreaHtml : raceAreaHtmls) {
+                List<Node> areaHtmls = raceAreaHtml.childNodes();
+                res.addAll(areaHtmls);
+            }
+        }
+        return res;
+    }
+
 
 
     /**
@@ -102,7 +131,7 @@ public class ProvinceHandler extends AbstractDefaultAreaHandler {
     @Override
     public String mixUrl(Node areaHtml, String url) {
         String href = areaHtml.attr("href");
-        return "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/"+href;
+        return GetAreaMain.domain+href;
     }
 
     /**

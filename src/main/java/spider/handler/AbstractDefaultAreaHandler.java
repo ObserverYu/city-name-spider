@@ -1,13 +1,14 @@
 package spider.handler;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import spider.GetAreaMain;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,27 +89,9 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      * @date 2019/12/24 14:45
      */
     List<Node> getAreaNode(Document doc, String... otherArgs) {
-        List<Node> res = new ArrayList<>();
         Elements provincetr = doc.getElementsByClass(otherArgs[0]);
-        for (Element areaLine : provincetr) {
-            List<Node> raceAreaHtmls = areaLine.childNodes();
-            for (Node raceAreaHtml : raceAreaHtmls) {
-                List<Node> areaHtmls = raceAreaHtml.childNodes();
-                res.addAll(areaHtmls);
-            }
-        }
-        return res;
+        return new ArrayList<>(provincetr);
     }
-
-    /**
-     * 从节点中获取城市code
-     *
-     * @param areaHtml 城市html节点
-     * @return 城市code
-     * @author YuChen
-     * @date 2019/12/24 14:29
-     */
-    abstract String getCode(Node areaHtml);
 
     /**
      * 根据节点获取地区名
@@ -118,7 +101,15 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      * @author YuChen
      * @date 2019/12/24 14:26
      */
-    abstract String getAreaName(Node areaHtml);
+    String getAreaName(Node areaHtml) {
+        Node oneLine = areaHtml.childNodes().get(1)
+                .childNodes().get(0);
+        if(CollectionUtil.isNotEmpty(oneLine.childNodes())){
+            return oneLine.childNodes().get(0).outerHtml();
+        }else {
+            return oneLine.outerHtml();
+        }
+    }
 
     /**
      * 获取点击url
@@ -129,7 +120,10 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      * @author YuChen
      * @date 2019/12/24 14:29
      */
-    abstract String mixUrl(Node areaHtml, String url);
+    String mixUrl(Node areaHtml, String url) {
+        String href = areaHtml.childNodes().get(1).childNodes().get(0).attr("href");
+        return GetAreaMain.domain +href;
+    }
 
     /**
      * 获取typeCode
@@ -139,6 +133,20 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      * @author YuChen
      * @date 2019/12/24 15:10
      */
-    abstract String getTypeCode(Node areaNode);
+    String getTypeCode(Node areaNode) {
+        return "";
+    }
+
+    /**
+     * 从节点中获取城市code
+     *
+     * @param areaHtml 城市html节点
+     * @return 城市code
+     * @author YuChen
+     * @date 2019/12/24 14:29
+     */
+    String getCode(Node areaHtml) {
+        return areaHtml.childNodes().get(0).childNodes().get(0).childNodes().get(0).outerHtml();
+    }
 
 }

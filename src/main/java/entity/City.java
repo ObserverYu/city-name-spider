@@ -89,6 +89,7 @@ public class City {
 
     @Override
     public int hashCode(){
-        return Integer.valueOf(code);
+
+        return Long.valueOf(code).intValue();
     }
 }
