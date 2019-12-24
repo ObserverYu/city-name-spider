@@ -1,8 +1,7 @@
 package spider;
 
 import entity.City;
-import spider.handler.DistrictHandler;
-import spider.handler.ProvinceHandler;
+import spider.handler.*;
 
 import java.util.Set;
 
@@ -15,9 +14,11 @@ import java.util.Set;
  
 public class GetAreaMain {
 
-    public static final String mainUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/index.html";
+    // 入口url
+    public static final String ENTER_URL = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/index.html";
 
-    public static final String domain = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/";
+    // 主路径
+    public static final String DOMAIN = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/";
 
     /**
     * 获取主url的方法
@@ -28,7 +29,7 @@ public class GetAreaMain {
     * @date 2019/12/23 17:42
     */
     private static String getmainUrl(){
-        return mainUrl;
+        return ENTER_URL;
     }
 
     public static void main(String[] args) {
@@ -40,10 +41,19 @@ public class GetAreaMain {
         Set<City> allArea = new HashSet<>();
         provinceHandler.handle(getmainUrl(),"0",allArea,threadPoolExecutor);*/
 
-        Set<City> entity = ProvinceHandler.getInstance().getEntity(getmainUrl(), "0");
-        System.out.println(entity);
+/*        Set<City> province = ProvinceHandler.getInstance().getEntity(getmainUrl(), "0");
+        System.out.println(province);
 
-        Set<City> entity2 = DistrictHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/4208.html", "42");
-        System.out.println(entity);
+        Set<City> citiy = CityHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42.html", "42");
+        System.out.println(citiy);
+
+        Set<City> district = DistrictHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/4201.html", "4201");
+        System.out.println(district);
+
+        Set<City> town = TownHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/420882.html", "420882");
+        System.out.println(town);*/
+
+        Set<City> village = VillageHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/82/420882104.html", "420882104");
+        System.out.println(village);
     }
 }

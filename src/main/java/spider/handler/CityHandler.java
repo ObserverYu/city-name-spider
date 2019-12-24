@@ -1,5 +1,7 @@
 package spider.handler;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +34,17 @@ public class CityHandler extends AbstractDefaultAreaHandler {
      */
     @Override
     public Set<City> getEntity(String url, String parentCode) {
-        String html = HttpUtil.get(url);
+        HttpRequest get = HttpUtil.createGet(url);
+        HttpResponse execute = get.execute();
+        String html;
+        try {
+            html = new String(execute.bodyBytes(), "GBK");
+        } catch (Exception e) {
+            log.error("转码失败",e);
+            throw new RuntimeException("转码失败");
+        }
         return super.analysisHtml(url, parentCode, html, "citytr");
+
     }
 
     /**

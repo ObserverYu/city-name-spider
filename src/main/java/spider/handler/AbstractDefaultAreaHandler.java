@@ -1,6 +1,8 @@
 package spider.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +38,7 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      */
     @Override
     public Set<City> getEntity(String url, String parentCode) {
-        String html = HttpUtil.get(url);
+        String html = HttpUtil.get(url, CharsetUtil.CHARSET_GBK);
         return analysisHtml(url, parentCode, html, "provincetr");
     }
 
@@ -122,7 +124,10 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      */
     String mixUrl(Node areaHtml, String url) {
         String href = areaHtml.childNodes().get(1).childNodes().get(0).attr("href");
-        return GetAreaMain.domain +href;
+        if(StrUtil.isBlank(href)){
+            return href;
+        }
+        return GetAreaMain.DOMAIN +href;
     }
 
     /**
@@ -146,7 +151,13 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
      * @date 2019/12/24 14:29
      */
     String getCode(Node areaHtml) {
-        return areaHtml.childNodes().get(0).childNodes().get(0).childNodes().get(0).outerHtml();
+        Node oneLine = areaHtml.childNodes().get(0)
+                .childNodes().get(0);
+        if(CollectionUtil.isNotEmpty(oneLine.childNodes())){
+            return oneLine.childNodes().get(0).outerHtml();
+        }else {
+            return oneLine.outerHtml();
+        }
     }
 
 }
