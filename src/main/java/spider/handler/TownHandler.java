@@ -5,7 +5,6 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.nodes.Node;
 
 import java.util.Set;
 
@@ -47,19 +46,6 @@ public class TownHandler extends AbstractDefaultAreaHandler {
         }
         return super.analysisHtml(url, parentCode, html, "towntr");
 
-    }
-
-    /**
-     * 获取typeCode
-     *
-     * @param areaNode 城市html节点
-     * @return typeCode
-     * @author YuChen
-     * @date 2019/12/24 15:10
-     */
-    @Override
-    String getTypeCode(Node areaNode) {
-        return null;
     }
 
     /**
