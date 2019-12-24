@@ -3,12 +3,7 @@ package spider;
 import entity.City;
 import spider.handler.ProvinceHandler;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 从国家统计局官网获取最新的省市区信息
@@ -34,13 +29,16 @@ public class GetAreaMain {
     }
 
     public static void main(String[] args) {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(8, 8,
+/*        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(8, 8,
                 60L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
 
         ProvinceHandler provinceHandler = ProvinceHandler.getInstance();
         Set<City> allArea = new HashSet<>();
-        provinceHandler.handle(getmainUrl(),"0",allArea,threadPoolExecutor);
+        provinceHandler.handle(getmainUrl(),"0",allArea,threadPoolExecutor);*/
+
+        Set<City> entity = ProvinceHandler.getInstance().getEntity(getmainUrl(), "0");
+        System.out.println(entity);
     }
 
 /*    public List<City> start(){

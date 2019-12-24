@@ -20,6 +20,16 @@ public class City {
     // 点击该地区时的url
     private String url;
 
+    public City(){}
+
+    public City(String code, String parentCode, String name, String typeCode, String url) {
+        this.code = code;
+        this.parentCode = parentCode;
+        this.name = name;
+        this.typeCode = typeCode;
+        this.url = url;
+    }
+
     public Long getId() {
         return id;
     }
