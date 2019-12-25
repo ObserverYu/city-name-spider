@@ -57,8 +57,14 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
         Set<City> res = new HashSet<>();
         Document doc = Jsoup.parse(html);
         List<Node> areaNodes = getAreaNode(doc, otherArgs);
-        for (Node areaNode : areaNodes) {
-            res.add(nodeToCityEntity(areaNode, parentCode, url));
+        if(CollectionUtil.isNotEmpty(areaNodes)){
+            for (Node areaNode : areaNodes) {
+                res.add(nodeToCityEntity(areaNode, parentCode, url));
+            }
+        }else {
+            log.error(html);
+            log.error("===============限流url==================:"+url);
+            GetAreaMain.errorUrl.add(url);
         }
         return res;
     }
@@ -113,6 +119,23 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
         }
     }
 
+/*    *//**
+     * 获取点击url
+     *
+     * @param areaHtml 城市html节点
+     * @param url      当前解析的页面的url
+     * @return 当前节点城市点击后的url
+     * @author YuChen
+     * @date 2019/12/24 14:29
+     *//*
+    String mixUrl(Node areaHtml, String url) {
+        String href = areaHtml.childNodes().get(1).childNodes().get(0).attr("href");
+        if(StrUtil.isBlank(href)){
+            return href;
+        }
+        return GetAreaMain.DOMAIN +href;
+    }*/
+
     /**
      * 获取点击url
      *
@@ -127,7 +150,10 @@ public abstract class AbstractDefaultAreaHandler implements UrlToCityEntityHandl
         if(StrUtil.isBlank(href)){
             return href;
         }
-        return GetAreaMain.DOMAIN +href;
+        String[] split = url.split("/");
+        int lastfileLengh = split[split.length-1].length();
+        url = url.substring(0,url.length()-lastfileLengh);
+        return url +href;
     }
 
     /**

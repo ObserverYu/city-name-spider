@@ -1,10 +1,13 @@
 package spider.handler;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.nodes.Node;
+import spider.GetAreaMain;
 
 import java.util.Set;
 
@@ -44,6 +47,9 @@ public class DistrictHandler extends AbstractDefaultAreaHandler {
             throw new RuntimeException();
         }*/
         HttpRequest get = HttpUtil.createGet(url);
+        get.header("Cookie", GetAreaMain.COOKIE);
+        get.header("User-Agent",GetAreaMain.USER_AGENT);
+        get.header("Accept",GetAreaMain.ACCEPT);
         HttpResponse execute = get.execute();
         String html;
         try {
@@ -53,6 +59,27 @@ public class DistrictHandler extends AbstractDefaultAreaHandler {
             throw new RuntimeException("转码失败");
         }
         return super.analysisHtml(url, parentCode, html, "countytr");
+    }
+
+    /**
+     * 获取点击url
+     *
+     * @param areaHtml 城市html节点
+     * @param url      当前解析的页面的url
+     * @return 当前节点城市点击后的url
+     * @author YuChen
+     * @date 2019/12/24 14:29
+     */
+    @Override
+    String mixUrl(Node areaHtml, String url) {
+        String href = areaHtml.childNodes().get(1).childNodes().get(0).attr("href");
+        if(StrUtil.isBlank(href)){
+            return href;
+        }
+        String[] split = url.split("/");
+        int lastfileLengh = split[split.length-1].length();
+        url = url.substring(0,url.length()-lastfileLengh);
+        return url +href;
     }
 
 

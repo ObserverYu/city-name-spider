@@ -40,6 +40,9 @@ public class VillageHandler extends AbstractDefaultAreaHandler {
     @Override
     public Set<City> getEntity(String url, String parentCode) {
         HttpRequest get = HttpUtil.createGet(url);
+        get.header("Cookie", GetAreaMain.COOKIE);
+        get.header("User-Agent",GetAreaMain.USER_AGENT);
+        get.header("Accept",GetAreaMain.ACCEPT);
         HttpResponse execute = get.execute();
         String html;
         try {

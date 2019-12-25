@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
+import spider.GetAreaMain;
 
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class TownHandler extends AbstractDefaultAreaHandler {
     @Override
     public Set<City> getEntity(String url, String parentCode) {
         HttpRequest get = HttpUtil.createGet(url);
+        get.header("Cookie", GetAreaMain.COOKIE);
+        get.header("User-Agent",GetAreaMain.USER_AGENT);
+        get.header("Accept",GetAreaMain.ACCEPT);
         HttpResponse execute = get.execute();
         String html;
         try {
@@ -69,6 +73,6 @@ public class TownHandler extends AbstractDefaultAreaHandler {
      */
     @Override
     public UrlToCityEntityHandler getSonHandler() {
-        return null;
+        return VillageHandler.getInstance();
     }
 }

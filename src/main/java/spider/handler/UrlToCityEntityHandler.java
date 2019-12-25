@@ -2,6 +2,7 @@ package spider.handler;
 
 import cn.hutool.core.util.StrUtil;
 import entity.City;
+import spider.GetAreaMain;
 import spider.HandlerUrlTask;
 
 import java.util.Set;
@@ -36,13 +37,14 @@ public interface UrlToCityEntityHandler {
                 if(StrUtil.isNotBlank(sonUrl)){
                     if(threadPoolExecutor != null){
                         // 如果传入了线程池  则用线程池
-                        HandlerUrlTask task = new HandlerUrlTask(sonUrl,parentCode,collector,sonHandler,threadPoolExecutor);
+                        HandlerUrlTask task = new HandlerUrlTask(sonUrl,city.getCode(),collector,sonHandler,threadPoolExecutor);
                         threadPoolExecutor.submit(task);
                     }else {
                         sonHandler.handle(sonUrl,city.getCode(),collector,null);
                     }
                 }
             }
+            GetAreaMain.PROVINCE_FINISHED = true;
         }
     }
 
