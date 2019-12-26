@@ -3,7 +3,7 @@ package spider;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import entity.City;
 import lombok.extern.slf4j.Slf4j;
-import spider.handler.ProvinceHandler;
+import spider.handler.*;
 
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -30,7 +30,7 @@ public class GetAreaMain {
     public static volatile boolean PROVINCE_FINISHED = false;
 
     // 反爬虫  设置的heads
-    public static final String COOKIE = "trs_uv=k4i7ghbi_6_5yfn; AD_RS_COOKIE=20080919; _trs_ua_s_1=k4l3fdcg_6_6fv2; wzws_cid=a67cc9512c6d244101c1abd98b147a7289f0fe863d86fbca6c1de92667d1ab2cffe01c78f5960b4ab7f0c2693ed9c31f702a1fdf53421fe806312b1ce72b8130";
+    public static final String COOKIE = "_trs_uv=k4m16pij_6_115g; AD_RS_COOKIE=20080917";
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36";
 
@@ -52,8 +52,29 @@ public class GetAreaMain {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        runWithThreadPoll();
+    }
+
+    public static void test(){
+//        Set<City> province = ProvinceHandler.getInstance().getEntity(getmainUrl(), "0");
+//        System.out.println(province);
+//
+//        Set<City> citiy = CityHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42.html", "42",1);
+//        System.out.println(citiy);
+//
+        Set<City> district = DistrictHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/4201.html", "4201",1);
+        System.out.println(district);
+
+//        Set<City> town = TownHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/420882.html","420882",1);
+//        System.out.println(town);
+
+//        Set<City> village = VillageHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/82/420882104.html", "420882104",1);
+//        System.out.println(village);
+    }
+
+    public static void runWithThreadPoll() throws InterruptedException {
         // 将核心线程数设置为0  为了能够通过当前运行的线程数来判断所有任务是否都已经执行完成
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2,
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(4, 4,
                 30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
@@ -82,20 +103,5 @@ public class GetAreaMain {
             System.out.println("name:"+city.getName()+"code:"+city.getCode());
         }
         System.out.println(allArea.size());
-
-/*        Set<City> province = ProvinceHandler.getInstance().getEntity(getmainUrl(), "0");
-        System.out.println(province);
-
-        Set<City> citiy = CityHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42.html", "42");
-        System.out.println(citiy);
-
-        Set<City> district = DistrictHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/4201.html", "4201");
-        System.out.println(district);
-
-        Set<City> town = TownHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/420882.html", "420882");
-        System.out.println(town);
-
-        Set<City> village = VillageHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/08/82/420882104.html", "420882104");
-        System.out.println(village);*/
     }
 }

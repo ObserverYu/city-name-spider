@@ -1,9 +1,6 @@
 package spider.handler;
 
-import cn.hutool.core.util.StrUtil;
 import entity.City;
-import spider.GetAreaMain;
-import spider.HandlerUrlTask;
 
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,35 +15,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 public interface UrlToCityEntityHandler {
 
     /**
-    * 处理url
+    * 处理器入口
     *
     * @param
     * @return
     * @author YuChen
-    * @date 2019/12/24 9:49
+    * @date 2019/12/26 10:41
     */
-    default void handle(String url, String parentCode, Set<City> collector, ThreadPoolExecutor threadPoolExecutor){
-        Set<City> res = getEntity(url,parentCode);
-        // 收集结果
-        collector.addAll(res);
-        // 如果该页面有子页面 则对子页面进行处理
-        UrlToCityEntityHandler sonHandler = getSonHandler();
-        if(sonHandler != null){
-            for(City city:res){
-                String sonUrl = city.getUrl();
-                if(StrUtil.isNotBlank(sonUrl)){
-                    if(threadPoolExecutor != null){
-                        // 如果传入了线程池  则用线程池
-                        HandlerUrlTask task = new HandlerUrlTask(sonUrl,city.getCode(),collector,sonHandler,threadPoolExecutor);
-                        threadPoolExecutor.submit(task);
-                    }else {
-                        sonHandler.handle(sonUrl,city.getCode(),collector,null);
-                    }
-                }
-            }
-            GetAreaMain.PROVINCE_FINISHED = true;
-        }
-    }
+    void handle(String url, String parentCode, Set<City> collector, ThreadPoolExecutor threadPoolExecutor,boolean tryAgain,Integer maxTryTime,int waitMills);
 
     /**
      * 抽取/获得当前页面的地区信息
@@ -56,7 +32,7 @@ public interface UrlToCityEntityHandler {
      * @author YuChen
      * @date 2019/12/23 17:45
      */
-    Set<City> getEntity(String url, String parentCode);
+    Set<City> getEntity(String url, String parentCode, Integer tryTimes);
 
     /**
     * 当前页面条目是否可点击(有子条目)
@@ -77,6 +53,16 @@ public interface UrlToCityEntityHandler {
     * @date 2019/12/23 17:51
     */
     UrlToCityEntityHandler getSonHandler();
+
+    /**
+    * 获取html字符串
+    *
+    * @param
+    * @return
+    * @author YuChen
+    * @date 2019/12/26 10:38
+    */
+    String getHtml(String url);
 
 
 }

@@ -36,7 +36,7 @@ public class DistrictHandler extends AbstractDefaultAreaHandler {
      * @date 2019/12/23 17:45
      */
     @Override
-    public Set<City> getEntity(String url, String parentCode) {
+    public Set<City> getEntity(String url, String parentCode,Integer tryTimes) {
 /*        OkHttpClient client = new OkHttpClient().newBuilder().connectionPool(new ConnectionPool(8,10,TimeUnit.MINUTES)).build();
         Request request = new Request.Builder().url(url).build();
         try{
@@ -58,7 +58,7 @@ public class DistrictHandler extends AbstractDefaultAreaHandler {
             log.error("转码失败",e);
             throw new RuntimeException("转码失败");
         }
-        return super.analysisHtml(url, parentCode, html, "countytr");
+        return super.analysisHtml(url, parentCode, html, tryTimes,"countytr","towntr");
     }
 
     /**

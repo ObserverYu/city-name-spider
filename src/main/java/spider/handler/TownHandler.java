@@ -35,7 +35,7 @@ public class TownHandler extends AbstractDefaultAreaHandler {
      * @date 2019/12/23 17:45
      */
     @Override
-    public Set<City> getEntity(String url, String parentCode) {
+    public Set<City> getEntity(String url, String parentCode,Integer tryTimes) {
         HttpRequest get = HttpUtil.createGet(url);
         get.header("Cookie", GetAreaMain.COOKIE);
         get.header("User-Agent",GetAreaMain.USER_AGENT);
@@ -48,7 +48,7 @@ public class TownHandler extends AbstractDefaultAreaHandler {
             log.error("转码失败",e);
             throw new RuntimeException("转码失败");
         }
-        return super.analysisHtml(url, parentCode, html, "towntr");
+        return super.analysisHtml(url, parentCode, html, tryTimes,"towntr");
 
     }
 
