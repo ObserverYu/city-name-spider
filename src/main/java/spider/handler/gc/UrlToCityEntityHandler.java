@@ -1,4 +1,4 @@
-package spider.handler;
+package spider.handler.gc;
 
 import entity.City;
 

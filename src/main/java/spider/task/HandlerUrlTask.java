@@ -1,10 +1,6 @@
-package spider;
+package spider.task;
 
-import entity.City;
-import spider.handler.UrlToCityEntityHandler;
-
-import java.util.Set;
-import java.util.concurrent.ThreadPoolExecutor;
+import spider.dispater.GetAreaDispatcher;
 
 /**
  * 多线程处理任务
@@ -19,18 +15,12 @@ public class HandlerUrlTask implements Runnable {
 
     private String parentCode;
 
-    private Set<City> collector;
+    private GetAreaDispatcher dispatcher;
 
-    private UrlToCityEntityHandler handler;
-
-    private ThreadPoolExecutor threadPoolExecutor;
-
-    public HandlerUrlTask(String url, String parentCode, Set<City> collector, UrlToCityEntityHandler handler, ThreadPoolExecutor threadPoolExecutor) {
+    public HandlerUrlTask(String url, String parentCode, GetAreaDispatcher dispatcher) {
         this.url = url;
         this.parentCode = parentCode;
-        this.collector = collector;
-        this.handler = handler;
-        this.threadPoolExecutor = threadPoolExecutor;
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -46,6 +36,6 @@ public class HandlerUrlTask implements Runnable {
      */
     @Override
     public void run() {
-        handler.handle(url,parentCode,collector,threadPoolExecutor);
+        dispatcher.dispatch(url,parentCode);
     }
 }
