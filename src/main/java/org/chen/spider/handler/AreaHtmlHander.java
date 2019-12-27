@@ -1,6 +1,6 @@
-package spider.handler;
+package org.chen.spider.handler;
 
-import entity.City;
+import org.chen.entity.City;
 
 import java.util.Set;
 

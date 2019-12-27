@@ -1,6 +1,6 @@
-package spider.handler.gc;
+package org.chen.spider.handler.gc;
 
-import entity.City;
+import org.chen.entity.City;
 
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -22,7 +22,7 @@ public interface UrlToCityEntityHandler {
     * @author YuChen
     * @date 2019/12/26 10:41
     */
-    void handle(String url, String parentCode, Set<City> collector, ThreadPoolExecutor threadPoolExecutor,boolean tryAgain,Integer maxTryTime,int waitMills);
+    void handle(String url, String parentCode, Set<City> collector, ThreadPoolExecutor threadPoolExecutor, boolean tryAgain, Integer maxTryTime, int waitMills);
 
     /**
      * 抽取/获得当前页面的地区信息

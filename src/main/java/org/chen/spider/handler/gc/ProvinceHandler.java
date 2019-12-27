@@ -3,10 +3,10 @@
 //import cn.hutool.http.HttpRequest;
 //import cn.hutool.http.HttpResponse;
 //import cn.hutool.http.HttpUtil;
-//import entity.City;
+//import City;
 //import lombok.extern.slf4j.Slf4j;
 //import org.jsoup.nodes.Node;
-//import spider.GetAreaMain;
+//import GetAreaMain;
 //
 //import java.util.Set;
 //

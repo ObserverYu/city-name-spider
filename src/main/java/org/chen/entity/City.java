@@ -1,4 +1,4 @@
-package entity;
+package org.chen.entity;
 
 /**
  * 省市区实体类

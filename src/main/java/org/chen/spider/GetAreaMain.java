@@ -1,10 +1,10 @@
-package spider;
+package org.chen.spider;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
-import entity.City;
+import org.chen.entity.City;
 import lombok.extern.slf4j.Slf4j;
-import spider.dispater.GetAreaDispatcher;
-import spider.handler.CountyHtmlHandler;
+import org.chen.spider.dispater.GetAreaDispatcher;
+import org.chen.spider.handler.CountyHtmlHandler;
 
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -39,7 +39,7 @@ public class GetAreaMain {
     /**
      *   反爬虫  设置的heads
      */
-    public static final String COOKIE = "_trs_uv=k4m16pij_6_115g; AD_RS_COOKIE=20080917";
+    public static final String COOKIE = "_trs_uv=k4m16pij_6_115g; AD_RS_COOKIE=20080917; wzws_cid=bcdb5e634494a25a7c2e6663cfffd89cc7a2bd70dc01b3451a99ef51b80a2144495c360e8661c03fdecaa64298e6b176b5d2046626166f1c914c2ec71cddcbc8";
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36";
 
@@ -57,7 +57,7 @@ public class GetAreaMain {
     /**
      *   市页面表格class名
      */
-    public static final String CLASS_MARK_CITY = "provincetr";
+    public static final String CLASS_MARK_CITY = "citytr";
     /**
      *   区县页面表格class名
      */
@@ -84,8 +84,8 @@ public class GetAreaMain {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        //runWithThreadPoll();
-        test();
+        runWithThreadPoll();
+        //test();
     }
 
     public static void test(){
@@ -96,7 +96,7 @@ public class GetAreaMain {
 
     public static void runWithThreadPoll() throws InterruptedException {
         GetAreaDispatcher dispatcher = build();
-        dispatcher.dispatch(getMainUrl(),"0");
+        dispatcher.dispatch("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/31.html","31");
         // todo 可能会阻塞在提交某个省的任务之前  导致任务不能全部执行(其他级别的不会,因为提交操作在run方法中)
         // 通过一个标记保证入口处的所有省下面的市页面的任务都已经提交完成  之后的新任务提交过程都在已提交的任务之中
         while(!GetAreaMain.PROVINCE_FINISHED){
@@ -121,16 +121,21 @@ public class GetAreaMain {
             System.out.println("name:"+city.getName()+"code:"+city.getCode());
         }
         System.out.println(allArea.size());
+        System.out.println("=======================================");
+        for(String url :errorUrl){
+            System.out.println(url);
+        }
+        System.out.println(errorUrl.size());
     }
 
-    private static GetAreaDispatcher build(){
+    public static GetAreaDispatcher build(){
         // 将核心线程数设置为0  为了能够通过当前运行的线程数来判断所有任务是否都已经执行完成
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(4, 4,
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(3, 3,
                 30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
         ConcurrentHashSet<City> allArea = new ConcurrentHashSet<>();
-        GetAreaDispatcher dispatcher = new GetAreaDispatcher(allArea, threadPoolExecutor, true, 3, 5000);
+        GetAreaDispatcher dispatcher = new GetAreaDispatcher(allArea, threadPoolExecutor, true, 3, 10000);
         return dispatcher;
     }
 }

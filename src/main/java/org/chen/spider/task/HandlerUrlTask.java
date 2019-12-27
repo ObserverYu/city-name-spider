@@ -1,6 +1,6 @@
-package spider.task;
+package org.chen.spider.task;
 
-import spider.dispater.GetAreaDispatcher;
+import org.chen.spider.dispater.GetAreaDispatcher;
 
 /**
  * 多线程处理任务

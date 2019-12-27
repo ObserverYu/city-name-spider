@@ -1,4 +1,4 @@
-package spider.util;
+package org.chen.util;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -9,16 +9,16 @@ import java.util.List;
 
 
 /**
- * 模拟上海市打点
+ * mock上海市坐标data
  *  
  * @author YuChen
- * @date 2019/12/25 14:31
+ * @date 2019/12/24 14:31
  **/
  
 public class MockMarkerUtil {
 
     public static void main(String[] args) {
-        System.out.println(JSONObject.toJSONString(getMockDataEntity(121.65,121.20,31.35,31.00,100)));
+        System.out.println(JSONObject.toJSONString(getMockDataEntity(121.65,121.20,31.35,31.00,2000)));
     }
 
     public static List<MockMakerData> getMockDataEntity(Double maxLng,Double minLng,Double maxLat, Double minLat,Integer num){

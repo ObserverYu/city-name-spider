@@ -1,4 +1,4 @@
-package spider.dispater;
+package org.chen.spider.dispater;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ConcurrentHashSet;
@@ -6,11 +6,15 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import entity.City;
 import lombok.extern.slf4j.Slf4j;
-import spider.GetAreaMain;
-import spider.task.HandlerUrlTask;
-import spider.handler.AreaHtmlHander;
+import org.chen.entity.City;
+import org.chen.spider.GetAreaMain;
+import org.chen.spider.handler.*;
+import org.chen.spider.task.HandlerUrlTask;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,27 +30,27 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class GetAreaDispatcher {
 
     /**
-     *   收集器  需要线程安全
+     * 收集器  需要线程安全
      */
     private ConcurrentHashSet<City> collector;
 
     /**
-     *   线程池
+     * 线程池
      */
     private ThreadPoolExecutor threadPoolExecutor;
 
     /**
-     *   是否重试
+     * 是否重试
      */
     private boolean tryAgain;
 
     /**
-     *   最大重试次数
+     * 最大重试次数
      */
     private Integer maxTryTimes;
 
     /**
-     *   重试等待时间(毫秒)
+     * 重试等待时间(毫秒)
      */
     private int waitMills;
 
@@ -69,8 +73,8 @@ public class GetAreaDispatcher {
      */
     public void dispatch(String url, String parentCode) {
         Set<City> res = getFinalEntity(url, parentCode);
-        if(CollectionUtil.isEmpty(res)){
-            log.warn("url未获取到有效实体,url:{}",url);
+        if (CollectionUtil.isEmpty(res)) {
+            log.warn("url未获取到有效实体,url:{}", url);
             return;
         }
         // 收集结果
@@ -92,16 +96,19 @@ public class GetAreaDispatcher {
         GetAreaMain.PROVINCE_FINISHED = true;
     }
 
-
     private Set<City> getFinalEntity(String url, String parentCode) {
         String html = tryGetHtml(url);
-        if(StrUtil.isBlank(html)){
-            log.error("未获取到正确的html,url:{}",url);
+        if (StrUtil.isBlank(html)) {
+            log.error("未获取到正确的html,url:{}", url);
             return null;
         }
         // 根据页面选择处理器
         AreaHtmlHander areaHtmlHandler = getHandler(html);
-        return areaHtmlHandler.getEntity(url,html,parentCode);
+        if (areaHtmlHandler == null) {
+            log.error("没有合适的页面处理器,url:{}", url);
+            return null;
+        }
+        return areaHtmlHandler.getEntity(url, html, parentCode);
     }
 
     /**
@@ -112,19 +119,37 @@ public class GetAreaDispatcher {
      * @author YuChen
      * @date 2019/12/26 14:13
      */
-    private AreaHtmlHander getHandler(String html) {
+    public AreaHtmlHander getHandler(String html) {
+        Document doc = Jsoup.parse(html);
+        Elements allElements = doc.getAllElements();
+        for(Element element:allElements){
+            if (element.hasClass(GetAreaMain.CLASS_MARK_VILLAGE)) {
+                return VillageHtmlHandler.getInstance();
+            }
+            if (element.hasClass(GetAreaMain.CLASS_MARK_TOWN)) {
+                return TownHtmlHandler.getInstance();
+            }
+            if (element.hasClass(GetAreaMain.CLASS_MARK_COUNTY)) {
+                return CountyHtmlHandler.getInstance();
+            }
+            if (element.hasClass(GetAreaMain.CLASS_MARK_CITY)) {
+                return CityHtmlHandler.getInstance();
+            }
+            if (element.hasClass(GetAreaMain.CLASS_MARK_PROVINCE)) {
+                return ProvinceHtmlHandler.getInstance();
+            }
+        }
         return null;
     }
 
-
     /**
-    * 根据url获取html字符串
-    *
-    * @param
-    * @return
-    * @author YuChen
-    * @date 2019/12/26 14:41
-    */
+     * 根据url获取html字符串
+     *
+     * @param
+     * @return
+     * @author YuChen
+     * @date 2019/12/26 14:41
+     */
     private String tryGetHtml(String url) {
         String html = null;
         int tryTimes = 1;
@@ -140,8 +165,9 @@ public class GetAreaDispatcher {
                     e.printStackTrace();
                 }
                 if (i == tryTimes) {
-                    log.error("获取 {} 次后依旧失败,url:{}", i, url);
+                    log.error("获取 {} 次后依旧失败,url:{},html {}:", i, url,html);
                     GetAreaMain.errorUrl.add(url);
+                    return null;
                 }
             } else {
                 break;
@@ -151,13 +177,11 @@ public class GetAreaDispatcher {
     }
 
     /**
-    *
-    *
-    * @param
-    * @return
-    * @author YuChen
-    * @date 2019/12/26 14:41
-    */
+     * @param
+     * @return
+     * @author YuChen
+     * @date 2019/12/26 14:41
+     */
     private String getRespondBodyString(String url) {
         HttpRequest get = HttpUtil.createGet(url);
         get.header("Cookie", GetAreaMain.COOKIE);
@@ -183,7 +207,7 @@ public class GetAreaDispatcher {
      * @date 2019/12/26 14:07
      */
     private boolean isLegal(String html) {
-        return true;
+        return html.contains("charset=gb2312");
     }
 
     public ConcurrentHashSet<City> getCollector() {

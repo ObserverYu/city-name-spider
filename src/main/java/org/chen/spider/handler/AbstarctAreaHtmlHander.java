@@ -1,8 +1,8 @@
-package spider.handler;
+package org.chen.spider.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import entity.City;
+import org.chen.entity.City;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

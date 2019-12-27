@@ -1,10 +1,10 @@
-package spider.handler;
+package org.chen.spider.handler;
 
+import org.chen.spider.GetAreaMain;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import spider.GetAreaMain;
 
 import java.util.ArrayList;
 import java.util.List;
