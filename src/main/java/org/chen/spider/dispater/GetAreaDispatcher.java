@@ -9,7 +9,7 @@ import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.chen.constant.SpiderConstant;
 import org.chen.entity.City;
-import org.chen.spider.GetAreaMain;
+import org.chen.spider.GetAreaRunner;
 import org.chen.spider.handler.*;
 import org.chen.spider.task.HandlerUrlTask;
 import org.jsoup.Jsoup;
@@ -94,7 +94,7 @@ public class GetAreaDispatcher {
                 }
             }
         }
-        GetAreaMain.PROVINCE_FINISHED = true;
+        GetAreaRunner.PROVINCE_FINISHED = true;
     }
 
     /**
@@ -176,7 +176,7 @@ public class GetAreaDispatcher {
                 }
                 if (i == tryTimes) {
                     log.error("获取 {} 次后依旧失败,url:{},html {}:", i, url,html);
-                    GetAreaMain.errorUrl.add(url);
+                    GetAreaRunner.errorUrl.add(url);
                     return null;
                 }
             } else {

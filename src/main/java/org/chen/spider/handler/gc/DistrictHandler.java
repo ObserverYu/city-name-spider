@@ -7,7 +7,7 @@
 //import City;
 //import lombok.extern.slf4j.Slf4j;
 //import org.jsoup.nodes.Node;
-//import GetAreaMain;
+//import GetAreaRunner;
 //
 //import java.util.Set;
 //
@@ -47,9 +47,9 @@
 //            throw new RuntimeException();
 //        }*/
 //        HttpRequest get = HttpUtil.createGet(url);
-//        get.header("Cookie", GetAreaMain.COOKIE);
-//        get.header("User-Agent",GetAreaMain.USER_AGENT);
-//        get.header("Accept",GetAreaMain.ACCEPT);
+//        get.header("Cookie", GetAreaRunner.COOKIE);
+//        get.header("User-Agent",GetAreaRunner.USER_AGENT);
+//        get.header("Accept",GetAreaRunner.ACCEPT);
 //        HttpResponse execute = get.execute();
 //        String html;
 //        try {

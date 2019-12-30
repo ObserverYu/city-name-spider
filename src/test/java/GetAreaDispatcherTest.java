@@ -1,5 +1,5 @@
 import org.junit.Test;
-import org.chen.spider.GetAreaMain;
+import org.chen.spider.GetAreaRunner;
 import org.chen.spider.dispater.GetAreaDispatcher;
 
 import java.lang.reflect.Method;
@@ -15,7 +15,7 @@ public class GetAreaDispatcherTest {
 
     @Test
     public void testGetFinalEntity() throws NoSuchMethodException {
-        GetAreaDispatcher dispatcher = GetAreaMain.build();
+        GetAreaDispatcher dispatcher = GetAreaRunner.build();
         Class<GetAreaDispatcher> areaDispatcherClass = GetAreaDispatcher.class;
         Method getFinalEntity = areaDispatcherClass.getDeclaredMethod("getFinalEntity", String.class, String.class);
         //getFinalEntity.invoke(dispatcher,)

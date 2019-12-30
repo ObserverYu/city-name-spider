@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/12/23 17:13
  **/
 @Slf4j
-public class GetAreaMain {
+public class GetAreaRunner {
 
 	/**
 	 * 任务是否完成标识 防止网络问题阻塞在提交省级任务之前导致任务未全部完成
@@ -65,10 +65,11 @@ public class GetAreaMain {
 	 */
 	public static void runWithThreadPoll() throws InterruptedException {
 		GetAreaDispatcher dispatcher = build();
-		dispatcher.dispatch("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/31.html", "31");
-		// todo 可能会阻塞在提交某个省的任务之前  导致任务不能全部执行(其他级别的不会,因为提交操作在run方法中)
+		// 省的父code为0
+		dispatcher.dispatch(getMainUrl(), "0");
+		// 可能会阻塞在提交某个省的任务之前  导致任务不能全部执行(其他级别的不会,因为提交操作在run方法中)
 		// 通过一个标记保证入口处的所有省下面的市页面的任务都已经提交完成  之后的新任务提交过程都在已提交的任务之中
-		while (!GetAreaMain.PROVINCE_FINISHED) {
+		while (!GetAreaRunner.PROVINCE_FINISHED) {
 			Thread.sleep(2000);
 		}
 		ThreadPoolExecutor threadPoolExecutor = dispatcher.getThreadPoolExecutor();

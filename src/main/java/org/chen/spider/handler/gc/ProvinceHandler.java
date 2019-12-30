@@ -6,7 +6,7 @@
 //import City;
 //import lombok.extern.slf4j.Slf4j;
 //import org.jsoup.nodes.Node;
-//import GetAreaMain;
+//import GetAreaRunner;
 //
 //import java.util.Set;
 //
@@ -61,9 +61,9 @@
 //    @Override
 //    public Set<City> getEntity(String url, String parentCode,Integer tryTimes) {
 //        HttpRequest get = HttpUtil.createGet(url);
-//        get.header("Cookie", GetAreaMain.COOKIE);
-//        get.header("User-Agent",GetAreaMain.USER_AGENT);
-//        get.header("Accept",GetAreaMain.ACCEPT);
+//        get.header("Cookie", GetAreaRunner.COOKIE);
+//        get.header("User-Agent",GetAreaRunner.USER_AGENT);
+//        get.header("Accept",GetAreaRunner.ACCEPT);
 //        HttpResponse execute = get.execute();
 //        String html;
 //        try {
@@ -139,7 +139,7 @@
 //    @Override
 //    public String mixUrl(Node areaHtml, String url) {
 //        String href = areaHtml.attr("href");
-//        return GetAreaMain.DOMAIN+href;
+//        return GetAreaRunner.DOMAIN+href;
 //    }
 //
 //    /**

@@ -12,7 +12,7 @@
 //import org.jsoup.nodes.Document;
 //import org.jsoup.nodes.Node;
 //import org.jsoup.select.Elements;
-//import GetAreaMain;
+//import GetAreaRunner;
 //import HandlerUrlTask;
 //
 //import java.util.ArrayList;
@@ -56,7 +56,7 @@
 //                }
 //                if(i == tryTimes){
 //                    log.error("获取 {} 次后依旧失败,url:{}",i,url);
-//                    GetAreaMain.errorUrl.add(url);
+//                    GetAreaRunner.errorUrl.add(url);
 //                }
 //            }else {
 //                break;
@@ -80,7 +80,7 @@
 //                    }
 //                }
 //            }
-//            GetAreaMain.PROVINCE_FINISHED = true;
+//            GetAreaRunner.PROVINCE_FINISHED = true;
 //        }*/
 //
 //    }
@@ -108,9 +108,9 @@
 //    @Override
 //    public String getHtml(String url) {
 ///*        HttpRequest get = HttpUtil.createGet(url);
-//        get.header("Cookie", GetAreaMain.COOKIE);
-//        get.header("User-Agent",GetAreaMain.USER_AGENT);
-//        get.header("Accept",GetAreaMain.ACCEPT);
+//        get.header("Cookie", GetAreaRunner.COOKIE);
+//        get.header("User-Agent",GetAreaRunner.USER_AGENT);
+//        get.header("Accept",GetAreaRunner.ACCEPT);
 //        HttpResponse execute = get.execute();
 //        String html;
 //        try {
