@@ -1,6 +1,6 @@
 package org.chen.spider.handler;
 
-import org.chen.spider.GetAreaMain;
+import org.chen.constant.SpiderConstant;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2019/12/26 15:04
  **/
  
-public class ProvinceHtmlHandler extends AbstarctAreaHtmlHander {
+public class ProvinceHtmlHandler extends AbstractAreaHtmlHandler {
 
     private static class Singlon{
         private static final ProvinceHtmlHandler SINGLON = new ProvinceHtmlHandler();
@@ -36,7 +36,7 @@ public class ProvinceHtmlHandler extends AbstarctAreaHtmlHander {
     @Override
     protected List<Node> getAreaNode(Document doc) {
         List<Node> res = new ArrayList<>();
-        Elements provincetr = doc.getElementsByClass(GetAreaMain.CLASS_MARK_PROVINCE);
+        Elements provincetr = doc.getElementsByClass(SpiderConstant.CLASS_MARK_PROVINCE);
         for (Element areaLine : provincetr) {
             List<Node> raceAreaHtmls = areaLine.childNodes();
             for (Node raceAreaHtml : raceAreaHtmls) {
@@ -86,6 +86,6 @@ public class ProvinceHtmlHandler extends AbstarctAreaHtmlHander {
     @Override
     public String getLinkUrl(Node areaHtml, String url) {
         String href = areaHtml.attr("href");
-        return GetAreaMain.DOMAIN+href;
+        return SpiderConstant.DOMAIN+href;
     }
 }

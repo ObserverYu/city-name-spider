@@ -1,7 +1,7 @@
 package org.chen.spider.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
-import org.chen.spider.GetAreaMain;
+import org.chen.constant.SpiderConstant;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2019/12/26 15:04
  **/
  
-public class VillageHtmlHandler extends AbstarctAreaHtmlHander {
+public class VillageHtmlHandler extends AbstractAreaHtmlHandler {
 
     private static class Singlon{
         private static final VillageHtmlHandler SINGLON = new VillageHtmlHandler();
@@ -36,7 +36,7 @@ public class VillageHtmlHandler extends AbstarctAreaHtmlHander {
      */
     @Override
     public List<Node> getAreaNode(Document doc) {
-        Elements provincetr = doc.getElementsByClass(GetAreaMain.CLASS_MARK_VILLAGE);
+        Elements provincetr = doc.getElementsByClass(SpiderConstant.CLASS_MARK_VILLAGE);
         return new ArrayList<>(provincetr);
     }
 

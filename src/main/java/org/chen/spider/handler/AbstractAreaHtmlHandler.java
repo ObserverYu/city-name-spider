@@ -20,8 +20,18 @@ import java.util.Set;
  **/
 
 @Slf4j
-public abstract class AbstarctAreaHtmlHander implements AreaHtmlHander {
+public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
 
+    /**
+     * 根据html获取实体
+     *
+     * @param url 需要解析的页面url
+     * @param html 页面的html
+     * @param parentCode 当前页面的父地区code
+     * @return 当前页面解析出的地区实体
+     * @author YuChen
+     * @date 2019/12/30 9:58
+     */
     @Override
     public Set<City> getEntity(String url,String html, String parentCode) {
         Set<City> res = null;

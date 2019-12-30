@@ -8,16 +8,29 @@ package org.chen.entity;
  **/
  
 public class City {
+    /**
+     * 主键
+     */
     private Long id;
-
+    /**
+     * 地区code
+     */
     private String code;
-
+    /**
+     * 父地区code
+     */
     private String parentCode;
-
+    /**
+     * 地区名
+     */
     private String name;
-
+    /**
+     * 城乡分类代码
+     */
     private String typeCode;
-    // 点击该地区时的url
+    /**
+     * 点击该地区时的url
+     */
     private String url;
 
     public City(){}
