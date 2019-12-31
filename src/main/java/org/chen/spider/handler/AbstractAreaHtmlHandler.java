@@ -43,6 +43,7 @@ public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
             }
         } else {
             log.warn("未从html获取到节点,html:{}",html);
+            return null;
         }
         if(CollectionUtil.isEmpty(res)){
             log.warn("未从节点中获取到实体,url:{},html:{}",url,html);

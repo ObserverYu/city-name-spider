@@ -37,9 +37,9 @@ public class GetAreaRunner {
 		CityToMySQLInputer.inputToMySQL(dispatcher);
 		ThreadPoolExecutor threadPoolExecutor = dispatcher.getThreadPoolExecutor();
 		monitorAndPrint(dispatcher);
-		if(threadPoolExecutor.getPoolSize() == 0){
+		while(threadPoolExecutor.getPoolSize() == 0){
 			dispatcher.setFinished(true);
-			Thread.sleep(10000);
+			Thread.sleep(60*1000);
 			threadPoolExecutor.shutdown();
 		}
 	}
