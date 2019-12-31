@@ -1,17 +1,13 @@
 package org.chen.spider;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import lombok.extern.slf4j.Slf4j;
 import org.chen.constant.SpiderConstant;
 import org.chen.entity.City;
-import lombok.extern.slf4j.Slf4j;
 import org.chen.spider.dispater.GetAreaDispatcher;
-import org.chen.spider.handler.CountyHtmlHandler;
 
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.Collection;
+import java.util.concurrent.*;
 
 /**
  * 从国家统计局官网获取最新的省市区信息
@@ -23,47 +19,38 @@ import java.util.concurrent.TimeUnit;
 public class GetAreaRunner {
 
 	/**
-	 * 任务是否完成标识 防止网络问题阻塞在提交省级任务之前导致任务未全部完成
+	 * 任务是否完成标识 防止网络问题阻塞在提交省级任务之前导致任务未全部提交
 	 */
 	public static volatile boolean PROVINCE_FINISHED = false;
 
 	/**
 	 * 被限流的url
 	 */
-	public static final ConcurrentHashSet<String> errorUrl = new ConcurrentHashSet<>();
+	public static ConcurrentHashSet<String> errorUrl = new ConcurrentHashSet<>();
 
 
 	public static void main(String[] args) throws InterruptedException {
-		runWithThreadPoll();
-		//test();
-	}
-
-
-	/**
-	 * 获取主url的方法
-	 *
-	 * @return 入口url
-	 * @author YuChen
-	 * @date 2019/12/23 17:42
-	 */
-	private static String getMainUrl() {
-		return SpiderConstant.ENTER_URL;
-	}
-
-
-	public static void test() {
-		String html = "";
-		Set<City> district = CountyHtmlHandler.getInstance().getEntity("http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/42/4201.html", html, "42");
-		System.out.println(district);
+		// runWithThreadPollTest();
+		// test();
+		GetAreaDispatcher dispatcher = build();
+		dispatcher.dispatch(getMainUrl(),"0");
+		CityToMySQLInputer.inputToMySQL(dispatcher);
+		ThreadPoolExecutor threadPoolExecutor = dispatcher.getThreadPoolExecutor();
+		monitorAndPrint(dispatcher);
+		if(threadPoolExecutor.getPoolSize() == 0){
+			dispatcher.setFinished(true);
+			Thread.sleep(10000);
+			threadPoolExecutor.shutdown();
+		}
 	}
 
 	/**
-	 * 多线程运行
+	 * 多线程运行测试
 	 *
 	 * @author YuChen
 	 * @date 2019/12/30 9:56
 	 */
-	public static void runWithThreadPoll() throws InterruptedException {
+	public static void runWithThreadPollTest() throws InterruptedException {
 		GetAreaDispatcher dispatcher = build();
 		// 省的父code为0
 		dispatcher.dispatch(getMainUrl(), "0");
@@ -72,8 +59,12 @@ public class GetAreaRunner {
 		while (!GetAreaRunner.PROVINCE_FINISHED) {
 			Thread.sleep(2000);
 		}
+		monitorAndPrint(dispatcher);
+	}
+
+	public static void monitorAndPrint(GetAreaDispatcher dispatcher){
 		ThreadPoolExecutor threadPoolExecutor = dispatcher.getThreadPoolExecutor();
-		ConcurrentHashSet<City> allArea = dispatcher.getCollector();
+		Collection<City> allArea = dispatcher.getCollector();
 		// 保证所有省下面的市页面任务提交后  新任务都是在旧任务中被提交的
 		// 因此  如果线程池中的线程数不为0   则表示仍然有任务没有完成   则仍然可能有新的任务提交
 		while (threadPoolExecutor.getPoolSize() != 0) {
@@ -87,15 +78,6 @@ public class GetAreaRunner {
 				e.printStackTrace();
 			}
 		}
-		for (City city : allArea) {
-			System.out.println("name:" + city.getName() + "code:" + city.getCode());
-		}
-		System.out.println(allArea.size());
-		System.out.println("=======================================");
-		for (String url : errorUrl) {
-			System.out.println(url);
-		}
-		System.out.println(errorUrl.size());
 	}
 
 	/**
@@ -111,7 +93,18 @@ public class GetAreaRunner {
 				30L, TimeUnit.SECONDS,
 				new LinkedBlockingQueue<>(), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
-		ConcurrentHashSet<City> allArea = new ConcurrentHashSet<>();
-		return new GetAreaDispatcher(allArea, threadPoolExecutor, true, 3, 10000);
+		LinkedBlockingDeque<City> allArea = new LinkedBlockingDeque<>();
+		return new GetAreaDispatcher(allArea, threadPoolExecutor, true, 3, 10000,4);
+	}
+
+	/**
+	 * 获取主url的方法
+	 *
+	 * @return 入口url
+	 * @author YuChen
+	 * @date 2019/12/23 17:42
+	 */
+	private static String getMainUrl() {
+		return SpiderConstant.ENTER_URL;
 	}
 }

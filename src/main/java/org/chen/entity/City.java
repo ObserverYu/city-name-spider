@@ -32,6 +32,10 @@ public class City {
      * 点击该地区时的url
      */
     private String url;
+    /**
+     * 地区等级
+     */
+    private Integer level;
 
     public City(){}
 
@@ -41,6 +45,15 @@ public class City {
         this.name = name;
         this.typeCode = typeCode;
         this.url = url;
+    }
+
+    public City(String code, String parentCode, String name, String typeCode, String url, Integer level) {
+        this.code = code;
+        this.parentCode = parentCode;
+        this.name = name;
+        this.typeCode = typeCode;
+        this.url = url;
+        this.level = level;
     }
 
     public Long getId() {
@@ -89,6 +102,14 @@ public class City {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     @Override

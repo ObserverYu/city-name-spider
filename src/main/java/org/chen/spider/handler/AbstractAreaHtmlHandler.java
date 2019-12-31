@@ -2,15 +2,13 @@ package org.chen.spider.handler;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import org.chen.entity.City;
 import lombok.extern.slf4j.Slf4j;
+import org.chen.entity.City;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 默认的处理器
@@ -33,7 +31,7 @@ public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
      * @date 2019/12/30 9:58
      */
     @Override
-    public Set<City> getEntity(String url,String html, String parentCode) {
+    public Collection<City> getEntity(String url, String html, String parentCode) {
         Set<City> res = null;
         Document doc = Jsoup.parse(html);
         // 获取到全部的节点
@@ -45,6 +43,9 @@ public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
             }
         } else {
             log.warn("未从html获取到节点,html:{}",html);
+        }
+        if(CollectionUtil.isEmpty(res)){
+            log.warn("未从节点中获取到实体,url:{},html:{}",url,html);
         }
         return res;
     }
@@ -63,7 +64,8 @@ public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
         String areaUrl = getLinkUrl(areaNode, url);
         String code = getCode(areaNode);
         String typeCode = getTypeCode(areaNode);
-        return new City(code, parentCode, areaName, typeCode, areaUrl);
+        Integer level = getLevel();
+        return new City(code, parentCode, areaName, typeCode, areaUrl,level);
     }
 
     /**
@@ -143,4 +145,14 @@ public abstract class AbstractAreaHtmlHandler implements AreaHtmlHandler {
             return oneLine.outerHtml();
         }
     }
+
+    /**
+     * 获取该处理器处理的url的等级
+     *
+     * @return 获取该处理器处理的url的等级
+     * @author YuChen
+     * @date 2019/12/30 16:06
+     */
+    @Override
+    public abstract Integer getLevel();
 }

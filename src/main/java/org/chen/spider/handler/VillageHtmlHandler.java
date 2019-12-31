@@ -78,4 +78,15 @@ public class VillageHtmlHandler extends AbstractAreaHtmlHandler {
         }
     }
 
+    /**
+     * 获取地区等级 省:1 市:2 区县:3 镇:4 村:5
+     *
+     * @author YuChen
+     * @date 2019/12/30 14:28
+     */
+    @Override
+    public Integer getLevel() {
+        return 5;
+    }
+
 }

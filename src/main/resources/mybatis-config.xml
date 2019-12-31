@@ -3,18 +3,26 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <properties resource="mysql.properties"/>
+
+<!--    <settings>
+        &lt;!&ndash; 打印sql日志 &ndash;&gt;
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>-->
     <environments default="development">
         <environment id="development">
-            <transactionManager type="JDBC"/>
+            <transactionManager type="MANAGED">
+                <property name="closeConnection" value="false"/>
+            </transactionManager>
             <dataSource type="POOLED">
-                <property name="driver" value="${driver}"/>
-                <property name="url" value="${url}"/>
-                <property name="username" value="${username}"/>
-                <property name="password" value="${password}"/>
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.username}"/>
+                <property name="password" value="${db.password}"/>
             </dataSource>
         </environment>
     </environments>
     <mappers>
-        <mapper resource="org/mybatis/example/BlogMapper.xml"/>
+        <mapper resource="mapper/CityMapper.xml"/>
     </mappers>
 </configuration>
